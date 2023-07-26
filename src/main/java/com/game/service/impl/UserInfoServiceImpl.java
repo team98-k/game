@@ -1,7 +1,10 @@
 package com.game.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import com.game.dao.UserInfoDAO;
 import com.game.dao.impl.UserInfoDAOImpl;
@@ -22,7 +25,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 	@Override
 	public int insertUserInfo(Map<String, String> userInfo) {
-		return insertUserInfo(userInfo);
+		return uiDAO.insertUserInfo(userInfo);
 	}
 
 	@Override
@@ -33,6 +36,20 @@ public class UserInfoServiceImpl implements UserInfoService {
 	@Override
 	public int deleteUserInfo(String uiNum) {
 		return uiDAO.deleteUserInfo(uiNum);
+	}
+
+	@Override
+	public boolean login(Map<String, String> userinfo, HttpSession session) {
+		String uiId = userinfo.get("uiId");
+		Map<String, String> tmp = uiDAO.selectUserInfoById(uiId);
+		if(tmp != null) {
+			String uiPwd = tmp.get("uiPwd");
+			if(uiPwd.equals(userinfo.get("uiPwd"))){
+				session.setAttribute("user", tmp);
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

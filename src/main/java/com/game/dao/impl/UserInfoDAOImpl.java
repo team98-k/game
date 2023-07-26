@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import com.game.common.DBCon;
 import com.game.dao.UserInfoDAO;
 
@@ -18,7 +20,7 @@ public class UserInfoDAOImpl implements UserInfoDAO {
 	public List<Map<String, String>> selectUserInfoList(Map<String, String> userInfo) {
 		List<Map<String, String>> userInfoList = new ArrayList<>();
 		String sql = "SELECT \n" + "UI_NUM, UI_NAME, UI_ID, UI_PWD,\n"
-				+ "UI_IMG_PATH, UI_DESC, UI_BIRTH,CREDAT, CRETIM\n" + " LMODAT, LMOTIM, ACTIVE\n" + " FROM USER_INFO;";
+				+ "UI_IMG_PATH, UI_DESC, UI_BIRTH, CREDAT, CRETIM\n" + " LMODAT, LMOTIM, ACTIVE\n" + " FROM USER_INFO;";
 		try (Connection con = DBCon.getCon();) {
 			try (PreparedStatement ps = con.prepareStatement(sql);) {
 				try (ResultSet rs = ps.executeQuery()) {
@@ -88,12 +90,12 @@ public class UserInfoDAOImpl implements UserInfoDAO {
 				+ "DATE_FORMAT(NOW(), '%Y%m%d'), DATE_FORMAT(NOW(), '%H%i%s')\n" + ");";
 		try (Connection con = DBCon.getCon();) {
 			try (PreparedStatement ps = con.prepareStatement(sql);) {
-				ps.setString(1, "uiName");
-				ps.setString(2, "uiId");
-				ps.setString(3, "uiPwd");
-				ps.setString(4, "uiImgPath");
-				ps.setString(5, "uiDesc");
-				ps.setString(6, "uiBirth");
+				ps.setString(1, userInfo.get("uiName"));
+				ps.setString(2, userInfo.get("uiId"));
+				ps.setString(3, userInfo.get("uiPwd"));
+				ps.setString(4, userInfo.get("uiImgPath"));
+				ps.setString(5, userInfo.get("uiDesc"));
+				ps.setString(6, userInfo.get("uiBirth"));
 				return ps.executeUpdate();
 			}
 
@@ -105,15 +107,9 @@ public class UserInfoDAOImpl implements UserInfoDAO {
 
 	@Override
 	public int updateUserInfo(Map<String, String> userInfo) {
-		String sql = "UPDATE USER_INFO\r\n"
-				+ "SET UI_NAME=?,\r\n"
-				+ "UI_PWD=?,\r\n"
-				+ "UI_IMG_PATH=?,\r\n"
-				+ "UI_DESC=?,\r\n"
-				+ "UI_BIRTH=?,\r\n"
-				+ "LMODAT=DATE_FORMAT(NOW(),'%Y%m%d'),\r\n"
-				+ "LMOTIM=DATE_FORMAT(NOW(),'%H%i%s')\r\n"
-				+ "WHERE UI_NUM=?";
+		String sql = "UPDATE USER_INFO\r\n" + "SET UI_NAME=?,\r\n" + "UI_PWD=?,\r\n" + "UI_IMG_PATH=?,\r\n"
+				+ "UI_DESC=?,\r\n" + "UI_BIRTH=?,\r\n" + "LMODAT=DATE_FORMAT(NOW(),'%Y%m%d'),\r\n"
+				+ "LMOTIM=DATE_FORMAT(NOW(),'%H%i%s')\r\n" + "WHERE UI_NUM=?";
 		try (Connection con = DBCon.getCon();) {
 			try (PreparedStatement ps = con.prepareStatement(sql);) {
 				ps.setString(1, userInfo.get("uiName"));
@@ -156,11 +152,43 @@ public class UserInfoDAOImpl implements UserInfoDAO {
 		ui.put("uiDesc", "동에번쩍서에번쩍");
 		ui.put("uiBirth", "19880902");
 		ui.put("uiNum", "5");
-		
+
 		System.out.println(uiRepo.selectUserInfo("1"));
-		
+
 		System.out.println(uiRepo.deleteUserInfo("5"));
-		
+
 	}
 
+	@Override
+	public Map<String, String> selectUserInfoById(String uiId) {
+		String sql = "SELECT UI_NUM, UI_NAME, UI_ID, UI_PWD," + " UI_IMG_PATH, UI_DESC, UI_BIRTH, CREDAT,"
+				+ " CRETIM, LMODAT, LMOTIM, ACTIVE " + "FROM USER_INFO WHERE UI_ID=?;";
+		try (Connection con = DBCon.getCon();) {
+			try (PreparedStatement ps = con.prepareStatement(sql);) {
+				ps.setString(1, uiId);
+				try (ResultSet rs = ps.executeQuery()) {
+					if (rs.next()) {
+						Map<String, String> userInfo = new HashMap<>();
+						userInfo.put("uiNum", rs.getString("UI_NUM"));
+						userInfo.put("uiName", rs.getString("UI_NAME"));
+						userInfo.put("uiId", rs.getString("UI_ID"));
+						userInfo.put("uiPwd", rs.getString("UI_PWD"));
+						userInfo.put("uiImgPath", rs.getString("UI_IMG_PATH"));
+						userInfo.put("uiDesc", rs.getString("UI_DESC"));
+						userInfo.put("uiBirth", rs.getString("UI_BIRTH"));
+						userInfo.put("credat", rs.getString("CREDAT"));
+						userInfo.put("cretim", rs.getString("CRETIM"));
+						userInfo.put("lmodat", rs.getString("LMODAT"));
+						userInfo.put("lmotim", rs.getString("LMOTIM"));
+						userInfo.put("active", rs.getString("active"));
+						return userInfo;
+					}
+				}
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

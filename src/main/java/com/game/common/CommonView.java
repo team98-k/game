@@ -22,4 +22,11 @@ public class CommonView {
 		int idx = uri.lastIndexOf("/") + 1;
 		return uri.substring(idx);
 	}
+
+	public static void forwordMessage(HttpServletRequest req, HttpServletResponse res)
+			throws ServletException, IOException {
+		String path = "/WEB-INF/views/common/message.jsp";
+		RequestDispatcher rd = req.getRequestDispatcher(path);
+		rd.forward(req, res);
+	}
 }
