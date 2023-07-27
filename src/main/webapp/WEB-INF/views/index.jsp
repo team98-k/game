@@ -8,9 +8,14 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h3>GAME</h3>
+	
 	<c:if test="${user!=null}">
-	${user.uiNum}님 안녕하세요.
+	<h3>${user.uiName}님 안녕하세요.</h3>
+	<ul>
+		<li><a href="/user-info/my">내 정보</a></li>
+		<li><a href="/board-info/list">게시판</a></li>
+		<li><a href="/user-info/logout">로그아웃</a></li>
+	</ul>
 	<a href="/user-info/list">유저 정보</a>
 	<button onclick="location.href='/user-info/logout'">로그아웃</button>
 	</c:if>

@@ -39,17 +39,8 @@ public class UserInfoServiceImpl implements UserInfoService {
 	}
 
 	@Override
-	public boolean login(Map<String, String> userinfo, HttpSession session) {
-		String uiId = userinfo.get("uiId");
-		Map<String, String> tmp = uiDAO.selectUserInfoById(uiId);
-		if(tmp != null) {
-			String uiPwd = tmp.get("uiPwd");
-			if(uiPwd.equals(userinfo.get("uiPwd"))){
-				session.setAttribute("user", tmp);
-				return true;
-			}
-		}
-		return false;
+	public Map<String, String> login(String uiId) {
+		return uiDAO.selectUserInfoById(uiId);
 	}
 
 }

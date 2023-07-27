@@ -17,5 +17,5 @@ public interface UserInfoService {
 
 	int deleteUserInfo(String uiNum);
 	
-	boolean login(Map<String, String> userinfo, HttpSession session);
+	Map<String, String> login(String userId);
 }
