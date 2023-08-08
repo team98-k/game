@@ -12,38 +12,57 @@ import com.game.common.DBCon;
 import com.game.dao.BoardInfoDAO;
 
 public class BoardInfoDAOImpl implements BoardInfoDAO {
-
 	@Override
 	public List<Map<String, String>> selectBoardInfoList(Map<String, String> board) {
-		String sql = "SELECT bi.*, ui.UI_NAME from BOARD_INFO bi inner join USER_INFO ui on bi.UI_NUM=ui.UI_NUM WHERE 1=1";
-		String key = board.get("key");
-		List<Map<String, String>> boardInfoList = new ArrayList<Map<String, String>>();
+		List<Map<String, String>> list = new ArrayList<>();
+		String sql = "SELECT BI.*, UI.UI_NAME FROM board_info BI \r\n" + "INNER JOIN user_info UI \r\n"
+				+ "ON BI.UI_NUM = UI.UI_NUM WHERE 1=1";
 		if (board != null) {
+			String key = board.get("key");
 			if ("1".equals(key)) {
-				sql += " AND BI_TITLE LIKE CONCAT('%', ?, '%')";
+				sql += " AND BI_TITLE LIKE CONCAT('%',?,'%')";
 			} else if ("2".equals(key)) {
-				sql += " AND UI_NAME LIKE CONCAT('%', ?, '%')";
+				sql += " AND UI_NAME LIKE CONCAT('%',?,'%')";
 			} else if ("3".equals(key)) {
-				sql += " AND BI_CONTENT LIKE CONCAT('%', ?, '%')";
-			}else if("4".equals(key)) {
-				sql += " AND (BI_TITLE LIKE CONCAT('%', ?, '%') OR BI_CONTENT LIKE CONCAT('%', ?, '%'))";
-			}else if("5".equals(key)) {
-				sql += " AND (UI_NAME LIKE CONCAT('%', ?, '%') OR BI_CONTENT LIKE CONCAT('%', ?, '%'))";
-			}else if("6".equals(key)) {
-				sql += " AND (BI_TITLE LIKE CONCAT('%', ?, '%') OR UI_NAME LIKE CONCAT('%', ?, '%'))";
-			}else if("7".equals(key)) {
-				sql += " AND (BI_TITLE LIKE CONCAT('%', ?, '%') OR UI_NAME LIKE CONCAT('%', ?, '%') OR BI_CONTENT LIKE CONCAT('%', ?, '%'))";
+				sql += " AND  BI_CONTENT LIKE CONCAT('%',?,'%')";
+			} else if ("4".equals(key)) {
+				sql += " AND ( BI_TITLE LIKE CONCAT('%',?,'%')";
+				sql += " OR BI_CONTENT LIKE CONCAT('%',?,'%'))";
+			} else if ("5".equals(key)) {
+				sql += " AND ( UI_NAME LIKE CONCAT('%',?,'%')";
+				sql += " OR BI_CONTENT LIKE CONCAT('%',?,'%'))";
+			} else if ("6".equals(key)) {
+				sql += " AND ( BI_TITLE LIKE CONCAT('%',?,'%')";
+				sql += " OR UI_NAME LIKE CONCAT('%',?,'%'))";
+			} else if ("7".equals(key)) {
+				sql += " AND ( BI_TITLE LIKE CONCAT('%',?,'%')";
+				sql += " OR UI_NAME LIKE CONCAT('%',?,'%')";
+				sql += " OR BI_CONTENT LIKE CONCAT('%',?,'%'))";
 			}
+
 		}
 		try (Connection con = DBCon.getCon()) {
 			try (PreparedStatement ps = con.prepareStatement(sql)) {
 				if (board != null) {
-					if("1".equals(key)||"2".equals(key)||"3".equals(key)) {
+					String key = board.get("key");
+					if ("1".equals(key)) {
 						ps.setString(1, board.get("value"));
-					}else if("4".equals(key)||"5".equals(key)||"6".equals(key)) {
+					} else if ("1".equals(key)) {
+						ps.setString(1, board.get("value"));
+					} else if ("2".equals(key)) {
+						ps.setString(1, board.get("value"));
+					} else if ("3".equals(key)) {
+						ps.setString(1, board.get("value"));
+					} else if ("4".equals(key)) {
 						ps.setString(1, board.get("value"));
 						ps.setString(2, board.get("value"));
-					}else if("7".equals(key)){
+					} else if ("5".equals(key)) {
+						ps.setString(1, board.get("value"));
+						ps.setString(2, board.get("value"));
+					} else if ("6".equals(key)) {
+						ps.setString(1, board.get("value"));
+						ps.setString(2, board.get("value"));
+					} else if ("7".equals(key)) {
 						ps.setString(1, board.get("value"));
 						ps.setString(2, board.get("value"));
 						ps.setString(3, board.get("value"));
@@ -51,7 +70,7 @@ public class BoardInfoDAOImpl implements BoardInfoDAO {
 				}
 				try (ResultSet rs = ps.executeQuery()) {
 					while (rs.next()) {
-						Map<String, String> bi = new HashMap<String, String>();
+						Map<String, String> bi = new HashMap<>();
 						bi.put("biNum", rs.getString("BI_NUM"));
 						bi.put("biTitle", rs.getString("BI_TITLE"));
 						bi.put("biContent", rs.getString("BI_CONTENT"));
@@ -61,26 +80,26 @@ public class BoardInfoDAOImpl implements BoardInfoDAO {
 						bi.put("cretim", rs.getString("CRETIM"));
 						bi.put("lmodat", rs.getString("LMODAT"));
 						bi.put("lmotim", rs.getString("LMOTIM"));
-						boardInfoList.add(bi);
+						bi.put("active", rs.getString("ACTIVE"));
+						list.add(bi);
 					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return boardInfoList;
+		return list;
 	}
 
 	@Override
 	public Map<String, String> selectBoardInfo(String biNum) {
-		String sql = "SELECT BI_NUM,BI_TITLE,BI_CONTENT,UI_NUM, CREDAT, CRETIM, LMODAT, LMOTIM\n"
-				+ "FROM BOARD_INFO WHERE BI_NUM=?";
+		String sql = "SELECT * FROM BOARD_INFO WHERE BI_NUM=?";
 		try (Connection con = DBCon.getCon()) {
 			try (PreparedStatement ps = con.prepareStatement(sql)) {
 				ps.setString(1, biNum);
 				try (ResultSet rs = ps.executeQuery()) {
-					if (rs.next()) {
-						Map<String, String> bi = new HashMap<String, String>();
+					while (rs.next()) {
+						Map<String, String> bi = new HashMap<>();
 						bi.put("biNum", rs.getString("BI_NUM"));
 						bi.put("biTitle", rs.getString("BI_TITLE"));
 						bi.put("biContent", rs.getString("BI_CONTENT"));
@@ -89,6 +108,7 @@ public class BoardInfoDAOImpl implements BoardInfoDAO {
 						bi.put("cretim", rs.getString("CRETIM"));
 						bi.put("lmodat", rs.getString("LMODAT"));
 						bi.put("lmotim", rs.getString("LMOTIM"));
+						bi.put("active", rs.getString("ACTIVE"));
 						return bi;
 					}
 				}
@@ -101,10 +121,9 @@ public class BoardInfoDAOImpl implements BoardInfoDAO {
 
 	@Override
 	public int insertBoardInfo(Map<String, String> board) {
-		String sql = "INSERT INTO BOARD_INFO(\n" + "	BI_TITLE, BI_CONTENT, UI_NUM, CREDAT,\n"
-				+ "    CRETIM, LMODAT, LMOTIM\n" + ")VALUES(?, ?, ?, DATE_FORMAT(NOW(), '%Y%m%d'),\n"
-				+ "DATE_FORMAT(NOW(), '%H%i%s'), DATE_FORMAT(NOW(), '%Y%m%d'),\n" + "DATE_FORMAT(NOW(), '%H%i%s')\n"
-				+ ")";
+		String sql = "INSERT INTO BOARD_INFO(\r\n" + "BI_TITLE, BI_CONTENT, UI_NUM, CREDAT,\r\n"
+				+ "CRETIM, LMODAT, LMOTIM\r\n" + ")\r\n" + "VALUES(\r\n" + "?,?,?, DATE_FORMAT(NOW(),'%Y%m%d'),\r\n"
+				+ "DATE_FORMAT(NOW(),'%H%i%s'), DATE_FORMAT(NOW(),'%Y%m%d'),DATE_FORMAT(NOW(),'%H%i%s')\r\n" + ")";
 		try (Connection con = DBCon.getCon()) {
 			try (PreparedStatement ps = con.prepareStatement(sql)) {
 				ps.setString(1, board.get("biTitle"));
@@ -120,8 +139,9 @@ public class BoardInfoDAOImpl implements BoardInfoDAO {
 
 	@Override
 	public int updateBoardInfo(Map<String, String> board) {
-		String sql = "UPDATE BOARD_INFO\n" + "SET BI_TITLE = ?,\n" + "BI_CONTENT=?,\n" + "UI_NUM=?,\n"
-				+ "LMODAT=DATE_FORMAT(NOW(), '%Y%m%d'),\n" + "LMOTIM=DATE_FORMAT(NOW(), '%H%i%s')\n" + "WHERE BI_NUM=?";
+		String sql = "UPDATE BOARD_INFO\r\n" + "SET BI_TITLE=?,\r\n" + "BI_CONTENT=?,\r\n" + "UI_NUM=?,\r\n"
+				+ "LMODAT=DATE_FORMAT(NOW(),'%Y%m%d'),\r\n" + "LMOTIM=DATE_FORMAT(NOW(),'%H%i%s')\r\n"
+				+ "WHERE BI_NUM=?";
 		try (Connection con = DBCon.getCon()) {
 			try (PreparedStatement ps = con.prepareStatement(sql)) {
 				ps.setString(1, board.get("biTitle"));
@@ -151,16 +171,8 @@ public class BoardInfoDAOImpl implements BoardInfoDAO {
 	}
 
 	public static void main(String[] args) {
-		BoardInfoDAO biDAO = new BoardInfoDAOImpl();
-//		Map<String, String> biMock = new HashMap<String, String>();
-//		biMock.put("biTitle", "test1");
-//		biMock.put("biContent", "test1");
-//		biMock.put("uiNum", "1");
-//		biMock.put("biNum", "5");
-//		int result = biDAO.deleteBoardInfo("5");
-//		System.out.println(result);
-		System.out.println(biDAO.selectBoardInfo("6").get("biTitle"));
-//		System.out.println(biDAO.selectBoardInfo("5"));
+		int[] biNums = new int[] {3,4};
+		String biTitles[] = {"test","test"};
+		String biContents[] = {"우리나라", "좋은나라"};
 	}
-
 }
