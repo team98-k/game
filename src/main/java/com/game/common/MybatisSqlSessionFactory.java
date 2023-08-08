@@ -31,19 +31,6 @@ public class MybatisSqlSessionFactory {
 	}
 
 	public static void main(String[] args) {
-		SqlSessionFactory ssf = getSqlSessionFactory();
-		try {
-			SqlSession session = ssf.openSession(true);
-			BoardInfoMapper biMapper = session.getMapper(BoardInfoMapper.class);
-			BoardInfoVO bi = new BoardInfoVO();
-			bi.setBiNum(23);
-			
-			List<BoardInfoVO> list = biMapper.selectBoardInfoList(null);
-			int result = biMapper.deleteBoardInfo(bi);
-			System.out.println(result);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 	}
 }
