@@ -9,8 +9,8 @@
 <jsp:include page="/WEB-INF/views/common/head.jsp" />
 </head>
 <body>
-	<h3>게시물 보기</h3>
 	<div class="container">
+	<h3>게시물 보기</h3>
 		<form action="/board-info/delete" method="POST">
 			<input type="hidden" name="biNum" value="${board.biNum}">
 			<table class="table table-bordered">
