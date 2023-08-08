@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.game.service.BoardInfoService;
 import com.game.service.impl.BoardInfoServiceImpl;
+import com.game.vo.BoardInfoVO;
 import com.google.gson.Gson;
 
 @WebServlet("/json/*")
@@ -24,8 +25,13 @@ public class JsonServlet extends HttpServlet {
 	private BoardInfoService biService = new BoardInfoServiceImpl();
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<Map<String, String>> biList = biService.selectBoardInfoList(null);
-		String json = gson.toJson(biList);
+		String searchType = request.getParameter("searchType");
+		String searchStr = request.getParameter("searchStr");
+		BoardInfoVO board = new BoardInfoVO();
+		board.setSearchStr(searchStr);
+		board.setSearchType(searchType);
+		
+		String json = gson.toJson( biService.selectBoardInfoList(board));
 	    response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setContentType("text/html;charset=UTF-8");
 		PrintWriter out = response.getWriter();

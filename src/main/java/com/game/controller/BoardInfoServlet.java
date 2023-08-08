@@ -16,6 +16,7 @@ import com.game.common.CommonView;
 import com.game.dao.BoardInfoDAO;
 import com.game.service.BoardInfoService;
 import com.game.service.impl.BoardInfoServiceImpl;
+import com.game.vo.BoardInfoVO;
 
 @WebServlet("/board-info/*")
 public class BoardInfoServlet extends HttpServlet {
@@ -46,8 +47,7 @@ public class BoardInfoServlet extends HttpServlet {
 			String value = request.getParameter("searchStr");
 			param.put("key", key);
 			param.put("value", value);
-			List<Map<String, String>> boardInfoList = boardService.selectBoardInfoList(param);
-			request.setAttribute("boardInfoList", boardInfoList);
+			request.setAttribute("boardInfoList", boardService.selectBoardInfoList(null));
 		} else if ("view".equals(cmd) || "update".equals(cmd)) {
 			String biNum = request.getParameter("biNum");
 			Map<String, String> board = boardService.selectBoardInfo(biNum);
@@ -108,11 +108,5 @@ public class BoardInfoServlet extends HttpServlet {
 			}
 		}
 		CommonView.forwordMessage(request, response);
-	}
-
-	public static void main(String[] args) {
-		BoardInfoService boardService = new BoardInfoServiceImpl();
-		List<Map<String, String>> boardInfoList = boardService.selectBoardInfoList(null);
-		System.out.println(boardInfoList.get(0).get("biNum"));
 	}
 }
