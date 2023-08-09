@@ -2,17 +2,18 @@ package com.game.vo;
 
 public class UserInfoVO {
 	private int uiNum;
-	private String uiNmae;
+	private String uiName;
 	private String uiId;
 	private String uiPwd;
 	private String uiImgPath;
-	private String desc;
+	private String uiDesc;
 	private String uiBirth;
 	private String credat;
 	private String cretim;
 	private String lmodat;
 	private String lmotim;
 	private String active;
+	
 	public int getUiNum() {
 		return uiNum;
 	}
@@ -20,10 +21,10 @@ public class UserInfoVO {
 		this.uiNum = uiNum;
 	}
 	public String getUiNmae() {
-		return uiNmae;
+		return uiName;
 	}
 	public void setUiNmae(String uiNmae) {
-		this.uiNmae = uiNmae;
+		this.uiName = uiNmae;
 	}
 	public String getUiId() {
 		return uiId;
@@ -43,11 +44,11 @@ public class UserInfoVO {
 	public void setUiImgPath(String uiImgPath) {
 		this.uiImgPath = uiImgPath;
 	}
-	public String getDesc() {
-		return desc;
+	public String getUiDesc() {
+		return uiDesc;
 	}
-	public void setDesc(String desc) {
-		this.desc = desc;
+	public void setUiDesc(String uiDesc) {
+		this.uiDesc = uiDesc;
 	}
 	public String getUiBirth() {
 		return uiBirth;
@@ -87,8 +88,8 @@ public class UserInfoVO {
 	}
 	@Override
 	public String toString() {
-		return "UserInfoVO [uiNum=" + uiNum + ", uiNmae=" + uiNmae + ", uiId=" + uiId + ", uiPwd=" + uiPwd
-				+ ", uiImgPath=" + uiImgPath + ", desc=" + desc + ", uiBirth=" + uiBirth + ", credat=" + credat
+		return "UserInfoVO [uiNum=" + uiNum + ", uiNmae=" + uiName + ", uiId=" + uiId + ", uiPwd=" + uiPwd
+				+ ", uiImgPath=" + uiImgPath + ", uiDesc=" + uiDesc + ", uiBirth=" + uiBirth + ", credat=" + credat
 				+ ", cretim=" + cretim + ", lmodat=" + lmodat + ", lmotim=" + lmotim + ", active=" + active + "]";
 	}
 }

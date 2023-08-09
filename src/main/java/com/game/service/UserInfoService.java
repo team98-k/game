@@ -5,9 +5,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.game.vo.UserInfoVO;
+
 public interface UserInfoService {
 
-	List<Map<String, String>> selectUserInfoList(Map<String, String> userInfo);
+	List<UserInfoVO> selectUserInfoList(UserInfoVO userInfo);
 
 	Map<String, String> selectUserInfo(String uiNUm);
 
