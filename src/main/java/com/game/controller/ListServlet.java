@@ -25,8 +25,9 @@ public class ListServlet extends HttpServlet {
 		MOCK_LIST = new ArrayList<>();
 		for(int i=1;i<=100;i++) {
 			Map<String, String> map  =new HashMap<>();
-			map.put("name", "이름1");
-			map.put("age", i+"살");
+			map.put("num", i+"");
+			map.put("name", "이름" + i);
+			map.put("age", i + "살");
 			map.put("address", "서울 어딘가");
 			MOCK_LIST.add(map);
 		}
@@ -36,7 +37,7 @@ public class ListServlet extends HttpServlet {
 		String json = gson.toJson(MOCK_LIST);
 		response.setContentType("application/json;charset=UTF-8");
 		PrintWriter out = response.getWriter();
-		out.print(json);
+		out.println(json);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
