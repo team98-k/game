@@ -19,10 +19,10 @@
 		xhr.onreadystatechange = function(){
 			if(xhr.readyState === 4){
 				if(xhr.status === 200){
-					if(xhr.responseText === '1'){
-						alert('수정 완료!');
+					if(xhr.responseText==='1'){
+						alert('삭제 완료');
 					}else{
-						alert('이미 삭제된 데이터입니다.');						
+						alert('이미 삭제된 내용입니다.');
 					}
 					location.href='/views/list';
 				}

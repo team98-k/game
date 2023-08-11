@@ -1,5 +1,6 @@
 package com.game.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.game.common.CommonView;
+import com.game.common.Json;
 import com.game.service.UserInfoService;
 import com.game.service.impl.UserInfoServiceImpl;
 import com.google.gson.Gson;
@@ -39,30 +41,19 @@ public class UserInfoServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		String cmd = CommonView.getCmd(request);
-		Map<String, String> userInfo = new HashMap<String, String>();
-		userInfo.put("uiNum", request.getParameter("uiNum"));
-		userInfo.put("uiId", request.getParameter("uiId"));
-		userInfo.put("uiName", request.getParameter("uiName"));
-		userInfo.put("uiPwd", request.getParameter("uiPwd"));
-		userInfo.put("uiDesc", request.getParameter("uiDesc"));
+
+		Map<String, String> userInfo = Json.parse(request, Map.class);
+		
 		if(request.getParameter("uiBirth") != null) {
 			userInfo.put("uiBirth", request.getParameter("uiBirth").replace("-", ""));
 		}
+		
+		int result = 0;
 		String uiNum = request.getParameter("uiNum");
 		if ("insert".equals(cmd)) {
-
-			int result = uiService.insertUserInfo(userInfo);
-
-			request.setAttribute("msg", "회원등록이 성공하였습니다.");
-			request.setAttribute("url", "/user-info/login");
-			if (result != 1) {
-				request.setAttribute("msg", "회원등록이 실패하였습니다.");
-				request.setAttribute("url", "/user-info/insert");
-			}
+			result =  uiService.insertUserInfo(userInfo);
 		} else if ("update".equals(cmd)) {
-
-			int result = uiService.updateUserInfo(userInfo);
-
+			result = uiService.updateUserInfo(userInfo);
 			request.setAttribute("msg", "회원 정보 수정이 성공하였습니다.");
 			request.setAttribute("url", "/user-info/view?uiNum=" + uiNum);
 			if (result != 1) {
@@ -70,8 +61,7 @@ public class UserInfoServlet extends HttpServlet {
 				request.setAttribute("url", "/user-info/view?uiNum=" + uiNum);
 			}
 		} else if ("delete".equals(cmd)) {
-			int result = uiService.deleteUserInfo(uiNum);
-
+			result = uiService.deleteUserInfo(uiNum);
 			request.setAttribute("msg", "회원 정보 삭제가 성공하였습니다.");
 			request.setAttribute("url", "/user-info/list");
 			if (result != 1) {
@@ -94,7 +84,9 @@ public class UserInfoServlet extends HttpServlet {
 				}
 			}
  		}
-		CommonView.forwordMessage(request, response);
+		response.setContentType("application/json;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		out.println(result);
 	}
 
 }

@@ -82,27 +82,27 @@ public class ListServlet extends HttpServlet {
 					if (one.get("num").equals(num)) {
 						if (MOCK_LIST.remove(one)) {
 							json = "1";
-							
 						}
 						break;
 					}
 				}
 			}
-		} else if ("update".equals(cmd)) {
-		    String num = request.getParameter("num");
-		    if (num != null) {
-		        for (Map<String, String> one : MOCK_LIST) {
-		            if (one.get("num").equals(num)) {
-		                one.putAll(map);
-		                json = "1";
-		                break;
-		            }
-		        }
-		    }
-
-			response.setContentType("application/json;charset=UTF-8");
-			PrintWriter out = response.getWriter();
-			out.print(json);
+		} else if("update".equals(cmd)) {
+			if(map!=null && map.get("num")!=null) {
+				String num = map.get("num");
+				for(Map<String,String> obj : MOCK_LIST) {
+					if(obj.get("num").equals(num)) {
+						obj.put("name", map.get("name"));
+						obj.put("age", map.get("age"));
+						obj.put("address", map.get("address"));
+						json = "1";
+						break;
+					}
+				}
+			}
 		}
+		response.setContentType("application/json;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		out.print(json);
 	}
 }

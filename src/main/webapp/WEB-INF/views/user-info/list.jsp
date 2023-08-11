@@ -28,7 +28,7 @@
 			</tbody>
 		</table>
 	<div align="right">
-		<a href="/user-info/insert">등록</a>		
+		<a href="/views/user-info/insert">등록</a>		
 	</div>
 	</div>
 <script type="text/javascript">
